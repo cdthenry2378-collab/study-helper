@@ -42,22 +42,22 @@ jobs:
 
       - name: Apply my custom icon
         run: |
-          test -f my-icon.png
+          test -f study-helper-icon.jpg
           mkdir -p site/assets
 
-          magick my-icon.png -resize 192x192 \
+          magick study-helper-icon.jpg -resize 192x192 \
             site/assets/icon-192.png
 
-          magick my-icon.png -resize 512x512 \
+          magick study-helper-icon.jpg -resize 512x512 \
             site/assets/icon-512.png
 
-          magick my-icon.png -resize 1024x1024 \
+          magick study-helper-icon.jpg -resize 1024x1024 \
             site/assets/icon-1024.png
 
-          magick my-icon.png -resize 180x180 \
+          magick study-helper-icon.jpg -resize 180x180 \
             site/assets/apple-touch-icon.png
 
-          magick my-icon.png -resize 32x32 \
+          magick study-helper-icon.jpg -resize 32x32 \
             site/assets/favicon.png
 
       - name: Configure Pages
