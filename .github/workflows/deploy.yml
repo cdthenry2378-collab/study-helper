@@ -1,0 +1,73 @@
+
+name: Deploy Study Helper with Custom Icon
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Extract app ZIP
+        run: |
+          mkdir -p site
+          unzip -q study-helper-android-pc.zip -d site
+          test -f site/index.html
+          test -f site/app.js
+          test -f site/styles.css
+
+      - name: Install image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+      - name: Apply my custom icon
+        run: |
+          test -f my-icon.png
+          mkdir -p site/assets
+
+          magick my-icon.png -resize 192x192 \
+            site/assets/icon-192.png
+
+          magick my-icon.png -resize 512x512 \
+            site/assets/icon-512.png
+
+          magick my-icon.png -resize 1024x1024 \
+            site/assets/icon-1024.png
+
+          magick my-icon.png -resize 180x180 \
+            site/assets/apple-touch-icon.png
+
+          magick my-icon.png -resize 32x32 \
+            site/assets/favicon.png
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
